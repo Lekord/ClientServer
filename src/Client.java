@@ -25,17 +25,8 @@ public class Client {
     }
 
     public void getMessage() throws IOException{
-        String inputLine; // Считываем поток данных от клиента из in
-        while ((inputLine = input.readLine()) != null) {
-            if (".".equals(inputLine)) {
-                output.println("good bye");
-                System.out.println("good bye");
-                break;
-            } else {
-                System.out.printf("Got a message from the server: %s \n", inputLine);
-            }
-            output.println(inputLine);
-        }
+        double inputLine = Double.parseDouble(in.readLine()); // Считываем поток данных от сервера из in
+        System.out.println("Итог перевода валют: %f" + inputLine);
     }
 
     public void sendMessage(String message){
@@ -82,7 +73,9 @@ public class Client {
             amountOfMoney = value3.nextLine();
             client.sendAmountOfMoney(amountOfMoney);
             System.out.println("> Message sent.");
-//            client.getMessage();
+            break;
+
         }
+        client.getMessage();
     }
 }

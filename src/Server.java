@@ -10,20 +10,18 @@ public class Server {
     private ServerSocket serverSocket;
     private Socket socket;
 
-    private PrintWriter output;
+//    private PrintWriter output;
     private BufferedReader in;
     private PrintWriter out;
 
     private BufferedReader inpCurrency1;
     private BufferedReader inpCurrency2;
     private BufferedReader inpAmountOfMoney;
-
+    double exchangedCurrency;
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         socket = serverSocket.accept();
-
-        output = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
         inpCurrency1 = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -35,10 +33,6 @@ public class Server {
 
         double AmountOfMoney;
         while ((AmountOfMoney = Double.parseDouble(inpAmountOfMoney.readLine())) != 0) {
-            if (".".equals(inpCurrency11)) {
-                output.println("good bye");
-                System.out.println("good bye");
-            } else {
                 System.out.println(inpCurrency11);
                 System.out.println(inpCurrency22);
                 System.out.println(AmountOfMoney);
@@ -48,21 +42,65 @@ public class Server {
                         switch (inpCurrency22){
                             case "USD":
                                 System.out.println(AmountOfMoney);
+                                exchangedCurrency = AmountOfMoney;
                                 break;
                             case "RUB":
                                 System.out.println(AmountOfMoney * 61);
+                                exchangedCurrency = AmountOfMoney * 61;
+                                break;
+                            case "YEN":
+                                System.out.println(AmountOfMoney * 136.73);
+                                exchangedCurrency = AmountOfMoney * 136.73;
+                                break;
+                            case "GBP":
+                                System.out.println(AmountOfMoney * 0.82);
+                                exchangedCurrency = AmountOfMoney * 0.82;
                                 break;
                         }
                         break;
-                    case "RUB":
-                    case "YEN":
-                    case "GBP":
+//                    case "RUB":
+//                        switch(inpCurrency22){
+//                            case "USD":
+//                                break;
+//                            case "YEN":
+//                                break;
+//                            case "GBP":
+//                                break;
+//                            case "RUB":
+//                                break;
+//                        }
+//                        break;
+//                    case "YEN":
+//                        switch (inpCurrency22){
+//                            case "USD":
+//                                break;
+//                            case "RUB":
+//                                break;
+//                            case "YEN":
+//                                break;
+//                            case "GBP":
+//                                break;
+//                        }
+//                        break;
+//                    case "GBP":
+//                        switch (inpCurrency22){
+//                            case "GBP":
+//                                break;
+//                            case "USD":
+//                                break;
+//                            case "RUB":
+//                                break;
+//                            case "YEN":
+//                                break;
+//                        }
+//                        break;
+//                }
                 }
-            }
+            break;
         }
     }
 
-    public void sendMessage(String message){
+    public void sendMessage(double message){
         out.println(message);
     }
 
@@ -70,18 +108,17 @@ public class Server {
         serverSocket.close();
         socket.close();
 //        input.close();
-        output.close();
+//        output.close();
     }
 
     public static void main(String[] args) throws IOException{
-        Scanner scanner = new Scanner(System.in);
         int port = 5555;
         Server server = new Server();
-        System.out.printf("Server started on port: %d. Listening for client request.", port);
+        System.out.printf("Server started on port: %d. Listening for client request.\n", port);
         server.start(port);
-        while (true) {
-            System.out.print("Message: ");
-            server.sendMessage(scanner.nextLine());
+        if(server.exchangedCurrency != 0) {
+            System.out.printf("Message: %f\n", server.exchangedCurrency);
+            server.sendMessage(server.exchangedCurrency);
             System.out.println("> Message sent.");
         }
     }
