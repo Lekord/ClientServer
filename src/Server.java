@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Server {
     private ServerSocket serverSocket;
     private Socket socket;
-//    private BufferedReader input;
+
     private PrintWriter output;
     private BufferedReader in;
     private PrintWriter out;
@@ -22,37 +22,45 @@ public class Server {
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         socket = serverSocket.accept();
+
         output = new PrintWriter(socket.getOutputStream(), true);
-//        input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
         inpCurrency1 = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         inpCurrency2 = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         inpAmountOfMoney = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        String inputLine; // Считываем поток данных от клиента из in
         String inpCurrency11 = inpCurrency1.readLine();
         String inpCurrency22 = inpCurrency2.readLine();
-        String inpAmountOfMoney1 = inpAmountOfMoney.readLine();
-//        while ((inputLine = input.readLine()) != null) {
-//            if (".".equals(inputLine)) {
-//                output.println("good bye");
-//                System.out.println("good bye");
-//                break;
-//            }
-//            } else {
-//                System.out.printf("Got a message from client: %s \n", inputLine);
-//
-//
-//            }
-//            output.println(inputLine);
-            System.out.println(inpCurrency11);
-            System.out.println(inpCurrency22);
-            System.out.println(inpAmountOfMoney1);
+
+        double AmountOfMoney;
+        while ((AmountOfMoney = Double.parseDouble(inpAmountOfMoney.readLine())) != 0) {
+            if (".".equals(inpCurrency11)) {
+                output.println("good bye");
+                System.out.println("good bye");
+            } else {
+                System.out.println(inpCurrency11);
+                System.out.println(inpCurrency22);
+                System.out.println(AmountOfMoney);
+
+                switch (inpCurrency11){
+                    case "USD":
+                        switch (inpCurrency22){
+                            case "USD":
+                                System.out.println(AmountOfMoney);
+                                break;
+                            case "RUB":
+                                System.out.println(AmountOfMoney * 61);
+                                break;
+                        }
+                        break;
+                    case "RUB":
+                    case "YEN":
+                    case "GBP":
+                }
+            }
         }
-
-
-//    }
+    }
 
     public void sendMessage(String message){
         out.println(message);
@@ -67,8 +75,10 @@ public class Server {
 
     public static void main(String[] args) throws IOException{
         Scanner scanner = new Scanner(System.in);
+        int port = 5555;
         Server server = new Server();
-        server.start(5555);
+        System.out.printf("Server started on port: %d. Listening for client request.", port);
+        server.start(port);
         while (true) {
             System.out.print("Message: ");
             server.sendMessage(scanner.nextLine());
